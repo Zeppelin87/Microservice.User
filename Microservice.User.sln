@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.User.ServiceMo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.User.Windsor", "Microservice.User.Windsor\Microservice.User.Windsor.csproj", "{2C86C8F1-C778-4D51-B61D-6AA73C4DE684}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Microservices", "Microservices\Microservices.sqlproj", "{071D84F1-3657-4FFF-909F-27430C6B4252}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,12 @@ Global
 		{2C86C8F1-C778-4D51-B61D-6AA73C4DE684}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C86C8F1-C778-4D51-B61D-6AA73C4DE684}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C86C8F1-C778-4D51-B61D-6AA73C4DE684}.Release|Any CPU.Build.0 = Release|Any CPU
+		{071D84F1-3657-4FFF-909F-27430C6B4252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{071D84F1-3657-4FFF-909F-27430C6B4252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{071D84F1-3657-4FFF-909F-27430C6B4252}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{071D84F1-3657-4FFF-909F-27430C6B4252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{071D84F1-3657-4FFF-909F-27430C6B4252}.Release|Any CPU.Build.0 = Release|Any CPU
+		{071D84F1-3657-4FFF-909F-27430C6B4252}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

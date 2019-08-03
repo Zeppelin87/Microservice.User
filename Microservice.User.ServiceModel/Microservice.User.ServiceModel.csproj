@@ -41,9 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Users\Email.cs" />
+    <Compile Include="Users\Phone.cs" />
+    <Compile Include="Users\User.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Users\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
