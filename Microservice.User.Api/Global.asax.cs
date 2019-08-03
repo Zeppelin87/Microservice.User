@@ -1,48 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Security;
-using System.Web.SessionState;
+﻿using Microservice.User.Api.App_Start;
+using Microservice.User.Windsor;
+using Microservice.User.Windsor.Installers;
+using System.Reflection;
+using System.Web.Http;
 
 namespace Microservice.User.Api
 {
     public class Global : System.Web.HttpApplication
     {
-
-        protected void Application_Start(object sender, EventArgs e)
+        protected void Application_Start()
         {
+            GlobalConfiguration.Configure(WebApiConfig.Register);
 
-        }
+            // Register windsor installers
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
 
-        protected void Session_Start(object sender, EventArgs e)
-        {
+            WindsorConfig.Configure(
+                new ControllerInstaller()
+                {
+                    ControllerType = typeof(ApiController),
+                    ExecutingAssembly = executingAssembly
+                },
+                new ServiceInstaller(),
+                new RepositoryInstaller()
+            );
 
-        }
-
-        protected void Application_BeginRequest(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void Application_AuthenticateRequest(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void Application_Error(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void Session_End(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void Application_End(object sender, EventArgs e)
-        {
-
+            GlobalConfiguration.Configuration.Services.Replace(typeof(System.Web.Http.Dispatcher.IHttpControllerActivator),
+                new HttpControllerActivator(WindsorConfig.Container));
         }
     }
 }
