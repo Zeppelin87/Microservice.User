@@ -117,15 +117,18 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\Microservice.User.Application\Microservice.User.Application.csproj">
+      <Project>{A4A323DF-D538-4CB8-9573-D8E7A701D9CB}</Project>
+      <Name>Microservice.User.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Microservice.User.Windsor\Microservice.User.Windsor.csproj">
       <Project>{2C86C8F1-C778-4D51-B61D-6AA73C4DE684}</Project>
       <Name>Microservice.User.Windsor</Name>
