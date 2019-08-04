@@ -4,7 +4,6 @@ using Microservice.User.Application.Validators;
 using Microservice.User.Infrastructure.Interfaces.Factories;
 using Microservice.User.Infrastructure.Interfaces.Repositories;
 using System;
-using System.Linq;
 
 namespace Microservice.User.Application.Services
 {
@@ -12,11 +11,13 @@ namespace Microservice.User.Application.Services
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IPhoneService _phoneService;
 
-        public UserService(IUnitOfWorkFactory unitOfWorkFactory, IRepositoryFactory repositoryFactory)
+        public UserService(IUnitOfWorkFactory unitOfWorkFactory, IRepositoryFactory repositoryFactory, IPhoneService phoneService)
         {
             _unitOfWorkFactory = unitOfWorkFactory;
             _repositoryFactory = repositoryFactory;
+            _phoneService = phoneService;
         }
 
         public int Post(ServiceModel.Users.User user)
@@ -28,7 +29,8 @@ namespace Microservice.User.Application.Services
                 {
                     number += " ext " + user.Phone.Extension;
                 }
-                user.Phone = PhoneUtility.CleanNumber(number);
+
+                user.Phone = _phoneService.CleanNumber(number);
 
                 var userValidator = new UserValidator();
                 var validationResult = userValidator.Validate(user);

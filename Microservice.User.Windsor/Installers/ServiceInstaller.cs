@@ -17,6 +17,13 @@ namespace Microservice.User.Windsor.Installers
                 .DependsOn(Dependency.OnComponent("unitOfWorkFactory", "unitOfWorkFactoryUserService"))
                 .LifestyleTransient()
             );
+
+            container.Register(
+                Component
+                .For<IPhoneService>()
+                .ImplementedBy<PhoneService>()
+                .LifestyleTransient()
+            );
         }
     }
 }

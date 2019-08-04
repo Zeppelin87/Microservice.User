@@ -1,10 +1,11 @@
-﻿using Microservice.User.ServiceModel.Users;
+﻿using Microservice.User.Application.Interfaces.Services;
+using Microservice.User.ServiceModel.Users;
 
-namespace Microservice.User.Application.Utility
+namespace Microservice.User.Application.Services
 {
-    public static class PhoneUtility
+    public class PhoneService : IPhoneService
     {
-        public static Phone CleanNumber(string number, string defaultCountryCode = "")
+        public Phone CleanNumber(string number, string defaultCountryCode = "")
         {
             if (string.IsNullOrEmpty(defaultCountryCode))
             {

@@ -54,10 +54,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\Services\IPhoneService.cs" />
     <Compile Include="Interfaces\Services\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\PhoneService.cs" />
     <Compile Include="Services\UserService.cs" />
-    <Compile Include="Utility\PhoneUtility.cs" />
     <Compile Include="Utility\Security.cs" />
     <Compile Include="Validators\EmailValidator.cs" />
     <Compile Include="Validators\UserValidator.cs" />
