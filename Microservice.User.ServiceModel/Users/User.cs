@@ -8,9 +8,10 @@ namespace Microservice.User.ServiceModel.Users
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
+        public string Password { get; set; }
         public string HashedPassword { get; set; }
         public string Salt { get; set; }
         public IList<Email> Emails { get; set; }
-        public IList<Phone> Phones { get; set; }
+        public Phone Phone { get; set; }
     }
 }
