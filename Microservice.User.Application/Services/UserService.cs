@@ -22,20 +22,28 @@ namespace Microservice.User.Application.Services
 
         public ServiceModel.Users.User GetUser(int userId)
         {
-            using (var unitOfWork = _unitOfWorkFactory.Create())
+            try
             {
-                var userRepository = _repositoryFactory.Create<IUserRepository>(unitOfWork);
-                var user = userRepository.GetUser(userId);
-
-                if (user == null)
+                using (var unitOfWork = _unitOfWorkFactory.Create())
                 {
-                    throw new Exception($"User with an id of {userId} could not be found.");
+                    var userRepository = _repositoryFactory.Create<IUserRepository>(unitOfWork);
+                    var user = userRepository.GetUser(userId);
+
+                    if (user == null)
+                    {
+                        throw new Exception($"User with an id of {userId} could not be found.");
+                    }
+
+                    user.HashedPassword = null;
+                    user.Salt = null;
+
+                    return user;
                 }
-
-                user.HashedPassword = null;
-                user.Salt = null;
-
-                return user;
+            }
+            catch (Exception ex)
+            {
+                // TODO: Implement logging
+                throw;
             }
         }
 
