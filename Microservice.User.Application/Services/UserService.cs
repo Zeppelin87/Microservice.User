@@ -20,6 +20,25 @@ namespace Microservice.User.Application.Services
             _phoneService = phoneService;
         }
 
+        public ServiceModel.Users.User GetUser(int userId)
+        {
+            using (var unitOfWork = _unitOfWorkFactory.Create())
+            {
+                var userRepository = _repositoryFactory.Create<IUserRepository>(unitOfWork);
+                var user = userRepository.GetUser(userId);
+
+                if (user == null)
+                {
+                    throw new Exception($"User with an id of {userId} could not be found.");
+                }
+
+                user.HashedPassword = null;
+                user.Salt = null;
+
+                return user;
+            }
+        }
+
         public int Post(ServiceModel.Users.User user)
         {
             try

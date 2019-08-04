@@ -1,6 +1,8 @@
-﻿using Microservice.User.Infrastructure.Interfaces.Repositories;
+﻿using Microservice.User.Infrastructure.Extensions;
+using Microservice.User.Infrastructure.Interfaces.Repositories;
 using Microservice.User.Infrastructure.Interfaces.UnitOfWork;
 using Microservice.User.ServiceModel.Users;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -13,6 +15,7 @@ namespace Microservice.User.Infrastructure.Repositories
         private readonly string InsertPhoneSproc = "[dbo].[InsertPhone]";
         private readonly string InsertUserEmailSproc = "[dbo].[InsertUserEmail]";
         private readonly string InsertUserPhoneSproc = "[dbo].[InsertUserPhone]";
+        private readonly string GetUserByIdSproc = "[dbo].[GetUserById]";
 
         public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
@@ -100,6 +103,71 @@ namespace Microservice.User.Infrastructure.Repositories
 
                 insertUserPhoneCommand.ExecuteNonQuery();
             }
+        }
+
+        public ServiceModel.Users.User GetUser(int userId)
+        {
+            using (var getUserByIdCommand = UnitOfWork.CreateCommand())
+            {
+                getUserByIdCommand.CommandType = CommandType.StoredProcedure;
+                getUserByIdCommand.CommandText = GetUserByIdSproc;
+
+                getUserByIdCommand.Parameters.Add(new SqlParameter("@UserId", userId));
+
+                using (var reader = getUserByIdCommand.ExecuteReader())
+                {
+                    return PopulateUserFromDataReader(reader);
+                }
+            }
+        }
+
+        private ServiceModel.Users.User PopulateUserFromDataReader(IDataReader reader)
+        {
+            ServiceModel.Users.User user = null;
+
+            if (reader.Read())
+            {
+                user = new ServiceModel.Users.User()
+                {
+                    Id = (int)reader["Id"],
+                    FirstName = reader.ValueOrNull<string>("FirstName"),
+                    LastName = reader.ValueOrNull<string>("LastName"),
+                    Username = reader.ValueOrNull<string>("Username"),
+                    HashedPassword = reader.ValueOrNull<string>("HashedPassword"),
+                    Salt = reader.ValueOrNull<string>("Salt")
+                };
+            }
+
+            if (reader.NextResult())
+            {
+                user.Emails = new List<Email>();
+                while (reader.Read())
+                {
+                    var email = new Email()
+                    {
+                        Id = (int)reader["Id"],
+                        Address = reader.ValueOrNull<string>("Address")
+                    };
+
+                    user.Emails.Add(email);
+                }
+            }
+
+            if (reader.NextResult())
+            {
+                if (reader.Read())
+                {
+                    user.Phone = new Phone()
+                    {
+                        Id = (int)reader["Id"],
+                        CountryCode = reader.ValueOrNull<string>("CountryCode"),
+                        Number = reader.ValueOrNull<string>("Number"),
+                        Extension = reader.ValueOrNull<string>("Extension"),
+                    };
+                }
+            }
+
+            return user;
         }
     }
 }

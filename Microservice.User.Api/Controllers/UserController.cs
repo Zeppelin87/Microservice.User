@@ -19,7 +19,15 @@ namespace Microservice.User.Api.Controllers
         public HttpResponseMessage Post(ServiceModel.Users.User user)
         {
             var userId = _userService.Post(user);
-            return Request.CreateResponse(HttpStatusCode.OK, userId);
+            return Request.CreateResponse(HttpStatusCode.Created, userId);
+        }
+
+        [HttpGet]
+        [Route("~/users/{userId}")]
+        public HttpResponseMessage GetUser(int userId)
+        {
+            var user = _userService.GetUser(userId);
+            return Request.CreateResponse(HttpStatusCode.OK, user);
         }
     }
 }

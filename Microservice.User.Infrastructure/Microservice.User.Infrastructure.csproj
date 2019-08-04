@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\SqlExtensions.cs" />
     <Compile Include="Factories\UnitOfWorkFactory.cs" />
     <Compile Include="Interfaces\Factories\IRepositoryFactory.cs" />
     <Compile Include="Interfaces\Factories\IUnitOfWorkFactory.cs" />

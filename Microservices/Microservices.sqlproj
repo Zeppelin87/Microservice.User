@@ -73,5 +73,6 @@
     <Build Include="dbo\StoredProcedures\InsertUserEmail.sql" />
     <Build Include="dbo\StoredProcedures\InsertPhone.sql" />
     <Build Include="dbo\StoredProcedures\InsertUserPhone.sql" />
+    <Build Include="dbo\StoredProcedures\GetUserById.sql" />
   </ItemGroup>
 </Project>
