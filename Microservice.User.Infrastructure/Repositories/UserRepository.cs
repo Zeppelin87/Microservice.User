@@ -16,6 +16,9 @@ namespace Microservice.User.Infrastructure.Repositories
         private readonly string InsertUserEmailSproc = "[dbo].[InsertUserEmail]";
         private readonly string InsertUserPhoneSproc = "[dbo].[InsertUserPhone]";
         private readonly string GetUserByIdSproc = "[dbo].[GetUserById]";
+        private readonly string DeleteUserByIdSproc = "[dbo].[DeleteUserById]";
+        private readonly string DeleteEmailByIdSproc = "[dbo].[DeleteEmailById]";
+        private readonly string DeletePhoneByIdSproc = "[dbo].[DeletePhoneById]";
 
         public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
@@ -168,6 +171,45 @@ namespace Microservice.User.Infrastructure.Repositories
             }
 
             return user;
+        }
+
+        void IUserRepository.DeleteUserById(int userId)
+        {
+            using (var deleteUserByIdCommand = UnitOfWork.CreateCommand())
+            {
+                deleteUserByIdCommand.CommandType = CommandType.StoredProcedure;
+                deleteUserByIdCommand.CommandText = DeleteUserByIdSproc;
+
+                deleteUserByIdCommand.Parameters.Add(new SqlParameter("@UserId", userId));
+
+                deleteUserByIdCommand.ExecuteNonQuery();
+            }
+        }
+
+        void IUserRepository.DeleteEmailById(int emailId)
+        {
+            using (var deleteEmailByIdCommand = UnitOfWork.CreateCommand())
+            {
+                deleteEmailByIdCommand.CommandType = CommandType.StoredProcedure;
+                deleteEmailByIdCommand.CommandText = DeleteEmailByIdSproc;
+
+                deleteEmailByIdCommand.Parameters.Add(new SqlParameter("@EmailId", emailId));
+
+                deleteEmailByIdCommand.ExecuteNonQuery();
+            }
+        }
+
+        void IUserRepository.DeletePhoneById(int phoneId)
+        {
+            using (var deletePhoneByIdCommand = UnitOfWork.CreateCommand())
+            {
+                deletePhoneByIdCommand.CommandType = CommandType.StoredProcedure;
+                deletePhoneByIdCommand.CommandText = DeletePhoneByIdSproc;
+
+                deletePhoneByIdCommand.Parameters.Add(new SqlParameter("@PhoneId", phoneId));
+
+                deletePhoneByIdCommand.ExecuteNonQuery();
+            }
         }
     }
 }

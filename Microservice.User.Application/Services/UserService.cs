@@ -20,6 +20,24 @@ namespace Microservice.User.Application.Services
             _phoneService = phoneService;
         }
 
+        public void DeleteUserById(int userId)
+        {
+            using (var unitOfWork = _unitOfWorkFactory.Create())
+            {
+                var userRepository = _repositoryFactory.Create<IUserRepository>(unitOfWork);
+                var user = userRepository.GetUser(userId);
+
+                userRepository.DeleteUserById(user.Id);
+                userRepository.DeletePhoneById(user.Phone.Id);
+                foreach (var email in user.Emails)
+                {
+                    userRepository.DeleteEmailById(email.Id);
+                }
+
+                unitOfWork.Commit();
+            }
+        }
+
         public ServiceModel.Users.User GetUser(int userId)
         {
             try

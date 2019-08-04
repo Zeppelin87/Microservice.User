@@ -4,5 +4,6 @@
     {
         int Post(ServiceModel.Users.User user);
         ServiceModel.Users.User GetUser(int userId);
+        void DeleteUserById(int userId);
     }
 }

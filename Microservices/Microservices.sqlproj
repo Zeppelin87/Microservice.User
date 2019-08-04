@@ -74,5 +74,8 @@
     <Build Include="dbo\StoredProcedures\InsertPhone.sql" />
     <Build Include="dbo\StoredProcedures\InsertUserPhone.sql" />
     <Build Include="dbo\StoredProcedures\GetUserById.sql" />
+    <Build Include="dbo\StoredProcedures\DeleteUserById.sql" />
+    <Build Include="dbo\StoredProcedures\DeleteEmailById.sql" />
+    <Build Include="dbo\StoredProcedures\DeletePhoneById.sql" />
   </ItemGroup>
 </Project>
