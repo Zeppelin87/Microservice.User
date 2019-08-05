@@ -4,6 +4,6 @@ namespace Microservice.User.Application.Interfaces.Services
 {
     public interface IPhoneService
     {
-        Phone CleanNumber(string number, string defaultCountryCode = "");
+        Phone CleanNumber(Phone phone, string defaultCountryCode = "");
     }
 }

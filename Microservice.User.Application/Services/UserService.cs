@@ -1,8 +1,10 @@
-﻿using Microservice.User.Application.Interfaces.Services;
+﻿using FluentValidation.Results;
+using Microservice.User.Application.Interfaces.Services;
 using Microservice.User.Application.Utility;
 using Microservice.User.Application.Validators;
 using Microservice.User.Infrastructure.Interfaces.Factories;
 using Microservice.User.Infrastructure.Interfaces.Repositories;
+using Microservice.User.ServiceModel.Users;
 using System;
 
 namespace Microservice.User.Application.Services
@@ -69,16 +71,7 @@ namespace Microservice.User.Application.Services
         {
             try
             {
-                var number = user.Phone.Number;
-                if (!string.IsNullOrEmpty(user.Phone.Extension))
-                {
-                    number += " ext " + user.Phone.Extension;
-                }
-
-                user.Phone = _phoneService.CleanNumber(number);
-
-                var userValidator = new UserValidator();
-                var validationResult = userValidator.Validate(user);
+                var validationResult = ValidateUser(user);
 
                 if (!validationResult.IsValid)
                 {
@@ -104,6 +97,51 @@ namespace Microservice.User.Application.Services
                 // TODO: Implement logging
                 throw;
             }
+        }
+
+        public ServiceModel.Users.User UpdateUser(ServiceModel.Users.User user)
+        {
+            using (var unitOfWork = _unitOfWorkFactory.Create())
+            {
+                var validationResult = ValidateUser(user);
+
+                if (!validationResult.IsValid)
+                {
+                    // TODO: Implement custom exceptions in order to better handle validation failures
+                    throw new Exception($"User validation failed: {validationResult.Errors[0]?.ErrorMessage}");
+                }
+
+                var credential = GenerateHashedPassword(user.Password);
+                user.HashedPassword = credential.HashedPassword;
+                user.Salt = credential.Salt;
+
+                var userRepository = _repositoryFactory.Create<IUserRepository>(unitOfWork);
+                userRepository.UpdateUser(user);
+                userRepository.UpdatePhone(user.Phone);
+                foreach (var email in user.Emails)
+                {
+                    userRepository.UpdateEmail(email);
+                }
+
+                var updatedUser = userRepository.GetUser(user.Id);
+                unitOfWork.Commit();
+
+                return updatedUser;
+            }
+        }
+
+        private ValidationResult ValidateUser(ServiceModel.Users.User user)
+        {
+            user.Phone = _phoneService.CleanNumber(user.Phone);
+
+            var userValidator = new UserValidator();
+            return userValidator.Validate(user);
+        }
+
+        private Credential GenerateHashedPassword(string password)
+        {
+            var credential = Security.GenerateSecurePassword(password);
+            return credential;
         }
     }
 }

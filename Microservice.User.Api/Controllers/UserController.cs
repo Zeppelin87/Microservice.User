@@ -37,5 +37,13 @@ namespace Microservice.User.Api.Controllers
             _userService.DeleteUserById(userId);
             return Request.CreateResponse(HttpStatusCode.NoContent);
         }
+
+        [HttpPut]
+        [Route("~/users")]
+        public HttpResponseMessage PutUser(ServiceModel.Users.User user)
+        {
+            var updatedUser = _userService.UpdateUser(user);
+            return Request.CreateResponse(HttpStatusCode.OK, updatedUser);
+        }
     }
 }

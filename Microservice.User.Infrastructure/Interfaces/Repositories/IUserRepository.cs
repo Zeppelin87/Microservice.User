@@ -1,4 +1,6 @@
-﻿namespace Microservice.User.Infrastructure.Interfaces.Repositories
+﻿using Microservice.User.ServiceModel.Users;
+
+namespace Microservice.User.Infrastructure.Interfaces.Repositories
 {
     public interface IUserRepository
     {
@@ -7,5 +9,8 @@
         void DeleteUserById(int userId);
         void DeleteEmailById(int emailId);
         void DeletePhoneById(int phoneId);
+        void UpdateUser(ServiceModel.Users.User user);
+        void UpdatePhone(Phone phone);
+        void UpdateEmail(Email email);
     }
 }

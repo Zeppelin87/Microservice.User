@@ -19,6 +19,9 @@ namespace Microservice.User.Infrastructure.Repositories
         private readonly string DeleteUserByIdSproc = "[dbo].[DeleteUserById]";
         private readonly string DeleteEmailByIdSproc = "[dbo].[DeleteEmailById]";
         private readonly string DeletePhoneByIdSproc = "[dbo].[DeletePhoneById]";
+        private readonly string UpdateUserSproc = "[dbo].[UpdateUser]";
+        private readonly string UpdateEmailSproc = "[dbo].[UpdateEmail]";
+        private readonly string UpdatePhoneSproc = "[dbo].[UpdatePhone]";
 
         public UserRepository(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
@@ -126,7 +129,7 @@ namespace Microservice.User.Infrastructure.Repositories
 
         private ServiceModel.Users.User PopulateUserFromDataReader(IDataReader reader)
         {
-            ServiceModel.Users.User user = null;
+            var user = new ServiceModel.Users.User();
 
             if (reader.Read())
             {
@@ -139,38 +142,41 @@ namespace Microservice.User.Infrastructure.Repositories
                     HashedPassword = reader.ValueOrNull<string>("HashedPassword"),
                     Salt = reader.ValueOrNull<string>("Salt")
                 };
-            }
 
-            if (reader.NextResult())
-            {
-                user.Emails = new List<Email>();
-                while (reader.Read())
+
+                if (reader.NextResult())
                 {
-                    var email = new Email()
+                    user.Emails = new List<Email>();
+                    while (reader.Read())
                     {
-                        Id = (int)reader["Id"],
-                        Address = reader.ValueOrNull<string>("Address")
-                    };
+                        var email = new Email()
+                        {
+                            Id = (int)reader["Id"],
+                            Address = reader.ValueOrNull<string>("Address")
+                        };
 
-                    user.Emails.Add(email);
+                        user.Emails.Add(email);
+                    }
                 }
-            }
 
-            if (reader.NextResult())
-            {
-                if (reader.Read())
+                if (reader.NextResult())
                 {
-                    user.Phone = new Phone()
+                    if (reader.Read())
                     {
-                        Id = (int)reader["Id"],
-                        CountryCode = reader.ValueOrNull<string>("CountryCode"),
-                        Number = reader.ValueOrNull<string>("Number"),
-                        Extension = reader.ValueOrNull<string>("Extension"),
-                    };
+                        user.Phone = new Phone()
+                        {
+                            Id = (int)reader["Id"],
+                            CountryCode = reader.ValueOrNull<string>("CountryCode"),
+                            Number = reader.ValueOrNull<string>("Number"),
+                            Extension = reader.ValueOrNull<string>("Extension"),
+                        };
+                    }
                 }
+
+                return user;
             }
 
-            return user;
+            return null;
         }
 
         void IUserRepository.DeleteUserById(int userId)
@@ -209,6 +215,55 @@ namespace Microservice.User.Infrastructure.Repositories
                 deletePhoneByIdCommand.Parameters.Add(new SqlParameter("@PhoneId", phoneId));
 
                 deletePhoneByIdCommand.ExecuteNonQuery();
+            }
+        }
+
+        public void UpdateUser(ServiceModel.Users.User user)
+        {
+            using (var updateUserCommand = UnitOfWork.CreateCommand())
+            {
+                updateUserCommand.CommandType = CommandType.StoredProcedure;
+                updateUserCommand.CommandText = UpdateUserSproc;
+
+
+                updateUserCommand.Parameters.Add(new SqlParameter("@UserId", user.Id));
+                updateUserCommand.Parameters.Add(new SqlParameter("@FirstName", user.FirstName));
+                updateUserCommand.Parameters.Add(new SqlParameter("@LastName", user.LastName));
+                updateUserCommand.Parameters.Add(new SqlParameter("@Username", user.Username));
+                updateUserCommand.Parameters.Add(new SqlParameter("@HashedPassword", user.HashedPassword));
+                updateUserCommand.Parameters.Add(new SqlParameter("@Salt", user.Salt));
+
+                updateUserCommand.ExecuteNonQuery();
+            }
+        }
+
+        public void UpdatePhone(Phone phone)
+        {
+            using (var updatePhoneCommand = UnitOfWork.CreateCommand())
+            {
+                updatePhoneCommand.CommandType = CommandType.StoredProcedure;
+                updatePhoneCommand.CommandText = UpdatePhoneSproc;
+
+                updatePhoneCommand.Parameters.Add(new SqlParameter("@PhoneId", phone.Id));
+                updatePhoneCommand.Parameters.Add(new SqlParameter("@CountryCode", phone.CountryCode));
+                updatePhoneCommand.Parameters.Add(new SqlParameter("@Number", phone.Number));
+                updatePhoneCommand.Parameters.Add(new SqlParameter("@Extension", phone.Extension));
+
+                updatePhoneCommand.ExecuteNonQuery();
+            }
+        }
+
+        public void UpdateEmail(Email email)
+        {
+            using (var updateEmailCommand = UnitOfWork.CreateCommand())
+            {
+                updateEmailCommand.CommandType = CommandType.StoredProcedure;
+                updateEmailCommand.CommandText = UpdateEmailSproc;
+
+                updateEmailCommand.Parameters.Add(new SqlParameter("@EmailId", email.Id));
+                updateEmailCommand.Parameters.Add(new SqlParameter("@Address", email.Address));
+
+                updateEmailCommand.ExecuteNonQuery();
             }
         }
     }

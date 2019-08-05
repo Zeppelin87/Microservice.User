@@ -20,6 +20,7 @@ namespace Microservice.User.Windsor.Installers
                 .ImplementedBy<UnitOfWorkFactory>()
                 .Named("unitOfWorkFactoryUserService")
                 .DependsOn(Dependency.OnConfigValue("connectionString", ConfigurationManager.ConnectionStrings["Microservices"].ConnectionString))
+                .LifestyleTransient()
             );
 
             container.Register(
